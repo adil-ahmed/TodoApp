@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TaskItemClickListenter {
     private lateinit var bindings: ActivityMainBinding
     private lateinit var taskViewModel: TaskViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +32,16 @@ class MainActivity : AppCompatActivity() {
         taskViewModel.taskItems.observe(this){
             bindings.todoListRecyclerView.apply {
                 layoutManager = LinearLayoutManager(applicationContext)
-                adapter = TaskItemAdapter(it)
+                adapter = TaskItemAdapter(it, mainActivity)
             }
         }
+    }
+
+    override fun editTaskItem(taskItem: TaskItem) {
+        NewTaskSheet(taskItem).show(supportFragmentManager, "newTaskTag")
+    }
+
+    override fun completeTaskItem(taskItem: TaskItem) {
+        taskViewModel.setCompleted(taskItem)
     }
 }
